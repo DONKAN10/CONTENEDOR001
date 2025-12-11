@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  # Servicio de la Aplicación 1 (Backend/API)
+  app1:
+    build:
+      context: ./peliculasjs
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # **Sintaxis corregida para YAML:** CLAVE: VALOR
+      MONGO_URI: "mongodb+srv://renezapata:velRNW0tAaWuNlSi@clusterrzh001.gdfwt.mongodb.net/renemoviesdb?retryWrites=true&w=majority&appName=ClusterRZH001"
+      PORT: 3000
+    volumes:
+      # 1. Bind Mount del código local para desarrollo
+      - ./peliculasjs:/peliculasjs
+      # 2. Volumen para evitar que node_modules local sobrescriba el del contenedor
+      - node_modules_peliculasjs:/peliculasjs/node_modules
+
+  # Servicio de la Aplicación 2 (Frontend/Otra API)
+  app2:
+    build:
+      context: ./peliculasfront
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+    volumes:
+      # 1. Bind Mount del código local
+      - ./peliculasfront:/peliculasfront
+      # 2. Volumen para node_modules
+      - node_modules_peliculasfront:/peliculasfront/node_modules
+
+# Definición de los Volúmenes Persistentes
+volumes:
+  node_modules_peliculasjs:
+  node_modules_peliculasfront:
